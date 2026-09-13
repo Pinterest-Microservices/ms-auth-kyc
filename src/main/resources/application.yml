@@ -1,8 +1,6 @@
 spring:
   application:
     name: ms-auth-kyc
-  profiles:
-    active: mock
   config:
     import: "classpath:application-vault.yml,vault://"
   security:

@@ -1,6 +1,5 @@
 package com.example.msauthkyc.service;
 
-import com.example.msauthkyc.client.model.CreateAccountResponse;
 import com.example.msauthkyc.exception.InvalidRefreshTokenException;
 import com.example.msauthkyc.mapper.TokenMapper;
 import com.example.msauthkyc.model.KeycloakTokenResponse;
@@ -31,7 +30,6 @@ public class AuthService {
     private static final String REFRESH_TOKEN = "refresh_token";
     private static final String TOKEN_ENDPOINT_PATH = "/protocol/openid-connect/token";
 
-    private final AccountService accountService;
     private final OAuth2AuthorizedClientService authorizedClientService;
     private final RestTemplate restTemplate;
 
@@ -53,10 +51,8 @@ public class AuthService {
         String refreshToken = extractRefreshToken(authorizedClient);
         String pictureUrl = oidcUser.getPicture();
 
-        CreateAccountResponse accountResponse = accountService.createAccount(oidcUser);
-
         return LoginResponse.builder()
-                .accountId(accountResponse.getAccountId())
+                .accountId(oidcUser.getSubject())
                 .email(oidcUser.getEmail())
                 .fullName(oidcUser.getFullName())
                 .pictureUrl(pictureUrl)
@@ -112,7 +108,6 @@ public class AuthService {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         return new HttpEntity<>(form, headers);
-        // form data-nı düzgün Content-Type header-i ilə HTTP sorğusu üçün "paketləyir"
     }
 
     private String tokenEndpoint() {
