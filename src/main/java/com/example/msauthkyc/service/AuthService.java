@@ -75,13 +75,13 @@ public class AuthService {
             );
 
             if (keycloakResponse == null) {
-                throw new InvalidRefreshTokenException("Keycloak-dan boş cavab gəldi", null);
+                throw new InvalidRefreshTokenException();
             }
 
             return tokenMapper.toTokenResponse(keycloakResponse);
 
         } catch (HttpClientErrorException.BadRequest | HttpClientErrorException.Unauthorized e) {
-            throw new InvalidRefreshTokenException("Refresh token etibarsızdır və ya vaxtı bitib", e);
+            throw new InvalidRefreshTokenException("Token sehfdir");
         }
     }
 

@@ -1,7 +1,15 @@
 package com.example.msauthkyc.exception;
 
-public class MissingRefreshTokenException extends RuntimeException {
+import com.example.exceptionlib.exception.UnauthorizedException;
+import com.example.msauthkyc.error.AuthErrorCode;
+
+public class MissingRefreshTokenException extends UnauthorizedException {
+
+    public MissingRefreshTokenException() {
+        super(AuthErrorCode.MISSING_REFRESH_TOKEN);
+    }
+
     public MissingRefreshTokenException(String message) {
-        super(message);
+        super(AuthErrorCode.MISSING_REFRESH_TOKEN, message);
     }
 }
