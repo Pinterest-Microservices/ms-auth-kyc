@@ -1,6 +1,6 @@
 package com.example.msauthkyc.exception;
 
-import com.example.exceptionlib.exception.UnauthorizedException;
+import com.example.libexception.exception.UnauthorizedException;
 import com.example.msauthkyc.error.AuthErrorCode;
 
 public class InvalidRefreshTokenException extends UnauthorizedException {

@@ -1,6 +1,6 @@
 package com.example.msauthkyc.error;
 
-import com.example.exceptionlib.error.ErrorCode;
+import com.example.libexception.error.ErrorCode;
 import org.springframework.http.HttpStatus;
 
 public enum AuthErrorCode implements ErrorCode {

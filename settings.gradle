@@ -1,1 +1,17 @@
 rootProject.name = 'ms-auth-kyc'
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
+    repositories {
+        mavenCentral()
+        maven {
+            name = "Nexus"
+            url = uri(System.getenv("NEXUS_URL"))
+            allowInsecureProtocol = true
+            credentials {
+                username = System.getenv("NEXUS_USERNAME")
+                password = System.getenv("NEXUS_PASSWORD")
+            }
+        }
+    }
+}
