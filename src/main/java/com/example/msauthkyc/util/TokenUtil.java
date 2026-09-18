@@ -9,7 +9,7 @@ public class TokenUtil {
 
     public static void validateRefreshToken(String refreshToken) {
         if (refreshToken == null || refreshToken.isBlank()) {
-            throw new MissingRefreshTokenException("Refresh token boş ola bilməz");
+            throw new MissingRefreshTokenException();
         }
     }
 }

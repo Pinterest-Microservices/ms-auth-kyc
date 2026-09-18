@@ -81,7 +81,7 @@ public class AuthService {
             return tokenMapper.toTokenResponse(keycloakResponse);
 
         } catch (HttpClientErrorException.BadRequest | HttpClientErrorException.Unauthorized e) {
-            throw new InvalidRefreshTokenException("Token sehfdir");
+            throw new InvalidRefreshTokenException();
         }
     }
 

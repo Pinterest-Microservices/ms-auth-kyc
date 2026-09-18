@@ -1,7 +1,9 @@
 package com.example.msauthkyc.model;
 
-import lombok.*;
-import lombok.experimental.SuperBuilder;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
 @Data
@@ -14,7 +16,6 @@ public class LoginResponse {
     private String email;
     private String fullName;
     private String pictureUrl;
-
     private String accessToken;
     private String refreshToken;
 }

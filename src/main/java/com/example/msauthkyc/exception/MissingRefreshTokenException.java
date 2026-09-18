@@ -8,8 +8,4 @@ public class MissingRefreshTokenException extends UnauthorizedException {
     public MissingRefreshTokenException() {
         super(AuthErrorCode.MISSING_REFRESH_TOKEN);
     }
-
-    public MissingRefreshTokenException(String message) {
-        super(AuthErrorCode.MISSING_REFRESH_TOKEN, message);
-    }
 }
