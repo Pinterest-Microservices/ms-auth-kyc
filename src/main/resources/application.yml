@@ -32,7 +32,7 @@ server:
 
 eureka:
   instance:
-    hostname: 100.111.23.4 #tailscale
+    hostname: 100.111.23.4
     prefer-ip-address: true
   client:
     service-url:

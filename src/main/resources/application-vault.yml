@@ -11,9 +11,3 @@ spring:
         backend: secret
         application-name: ${spring.application.name}
       fail-fast: true
-
-#lib-exception:
-#  error-reporting:
-#    enabled: true
-#    dsn: "http://D#GsyqlZMN1W*gF-uDSZJV7lAeUzp(cc5oitkA3jU#8TPvGV0pnXA^7@Z3q+$VrV@coolify.tail1270a7.ts.net:8001/1"
-#    environment: ${spring.profiles.active:local}
