@@ -11,3 +11,4 @@ spring:
         backend: secret
         application-name: ${spring.application.name}
       fail-fast: true
+      
