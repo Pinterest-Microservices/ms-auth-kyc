@@ -29,11 +29,16 @@ management:
 
 server:
   port: 0
+  forward-headers-strategy: framework
 
 eureka:
   instance:
-    hostname: ${TAILSCALE_HOSTNAME}
     prefer-ip-address: true
+    ip-address: 127.0.0.1
   client:
     service-url:
       defaultZone: ${eureka-server}
+
+logging:
+  level:
+    org.springframework: DEBUG
