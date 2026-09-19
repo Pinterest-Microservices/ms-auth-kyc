@@ -19,7 +19,7 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @GetMapping("/login")
+    @GetMapping("/me")
     public LoginResponse login(@AuthenticationPrincipal OidcUser oidcUser, Authentication authentication) {
         return authService.handleLogin(oidcUser, authentication);
     }
