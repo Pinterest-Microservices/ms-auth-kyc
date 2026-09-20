@@ -1,3 +1,11 @@
+logging:
+  level:
+    org.springframework: DEBUG
+
+server:
+  port: 0
+  forward-headers-strategy: framework
+
 spring:
   application:
     name: ms-auth-kyc
@@ -16,6 +24,7 @@ spring:
               - openid
               - profile
               - email
+              - offline_access
             provider: keycloak
         provider:
           keycloak:
@@ -27,10 +36,6 @@ management:
       exposure:
         include: health,info
 
-server:
-  port: 0
-  forward-headers-strategy: framework
-
 eureka:
   instance:
     prefer-ip-address: true
@@ -39,6 +44,7 @@ eureka:
     service-url:
       defaultZone: ${eureka-server}
 
-logging:
-  level:
-    org.springframework: DEBUG
+lib-exception:
+  error-reporting:
+    dsn: ${bug-sink-dsn}
+    environment: ${spring.profiles.active:local}

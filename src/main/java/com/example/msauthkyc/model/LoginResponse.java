@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @Builder
 @NoArgsConstructor
@@ -17,5 +16,4 @@ public class LoginResponse {
     private String fullName;
     private String pictureUrl;
     private String accessToken;
-    private String refreshToken;
 }

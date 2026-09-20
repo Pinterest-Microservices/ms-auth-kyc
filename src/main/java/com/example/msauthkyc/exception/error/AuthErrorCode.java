@@ -1,4 +1,4 @@
-package com.example.msauthkyc.error;
+package com.example.msauthkyc.exception.error;
 
 import com.example.libexception.error.ErrorCode;
 import org.springframework.http.HttpStatus;
@@ -6,7 +6,8 @@ import org.springframework.http.HttpStatus;
 public enum AuthErrorCode implements ErrorCode {
 
     INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "Refresh token is invalid or expired."),
-    MISSING_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "Refresh token is required.");
+    MISSING_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "Refresh token is required."),
+    MISSING_OAUTH_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "Refresh token is not provided");
 
     private final HttpStatus httpStatus;
     private final String defaultMessage;
