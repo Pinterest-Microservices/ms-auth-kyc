@@ -110,10 +110,10 @@ public class SecurityConfig {
             ResponseCookie refreshCookie =
                     ResponseCookie.from("refresh_token", client.getRefreshToken().getTokenValue())
                             .httpOnly(true)
-                            .secure(false)
+                            .secure(false) // http
                             .path("/")
                             .maxAge(Duration.ofDays(30))
-                            .sameSite("None")
+                            .sameSite("Lax") // http
                             .build();
 
             response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
