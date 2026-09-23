@@ -117,6 +117,8 @@ public class SecurityConfig {
                             .build();
 
             response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
+
+            // todo redirect yazilsin
         };
     }
 
