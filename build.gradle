@@ -21,7 +21,8 @@ ext {
 
 dependencies {
 
-    implementation 'com.example:lib-exception:0.0.3'
+    implementation 'com.example:lib-exception:0.0.4'
+    implementation 'com.example:lib-auth-kyc:0.0.2'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-security-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-webmvc'

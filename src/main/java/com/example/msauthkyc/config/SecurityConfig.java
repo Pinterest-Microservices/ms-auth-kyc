@@ -11,25 +11,23 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
-import org.springframework.security.oauth2.client.oidc.web.logout.OidcClientInitiatedLogoutSuccessHandler;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizationRequestResolver;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestResolver;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import static com.example.msauthkyc.util.OAuth2ConstantsUtil.AUTHORIZATION_REQUEST_BASE_URI;
+import static com.example.msauthkyc.util.OAuth2ConstantsUtil.REGISTRATION_ID;
+
 @Configuration
 public class SecurityConfig {
-
-    private static final String AUTHORIZATION_REQUEST_BASE_URI = "/oauth2/authorization";
-    private static final String REGISTRATION_ID = "pin-client";
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
@@ -48,11 +46,10 @@ public class SecurityConfig {
                                         authorizationRequestResolver(clientRegistrationRepository)
                                 )
                         )
+                        .loginPage(AUTHORIZATION_REQUEST_BASE_URI + "/" + REGISTRATION_ID)
                         .successHandler(oauth2CookieSuccessHandler(authorizedClientService))
                 )
-                .logout(logout -> logout
-                        .logoutSuccessHandler(oidcLogoutSuccessHandler(clientRegistrationRepository))
-                );
+                .logout(AbstractHttpConfigurer::disable);
 
         return http.build();
     }
@@ -121,12 +118,4 @@ public class SecurityConfig {
             // todo redirect yazilsin
         };
     }
-
-    private LogoutSuccessHandler oidcLogoutSuccessHandler(ClientRegistrationRepository repo) {
-        OidcClientInitiatedLogoutSuccessHandler handler =
-                new OidcClientInitiatedLogoutSuccessHandler(repo);
-        handler.setPostLogoutRedirectUri("https://pinterest.com"); // todo: delete
-        return handler;
-    }
-
 }

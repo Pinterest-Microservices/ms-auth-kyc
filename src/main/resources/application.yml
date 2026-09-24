@@ -48,3 +48,14 @@ lib-exception:
   error-reporting:
     dsn: ${bug-sink-dsn}
     environment: ${spring.profiles.active:local}
+
+lib-auth-kyc:
+  keycloak:
+    server-url: https://keycloak.fuaddm.com
+    realm: pin-realm
+    client-id: spring-admin-client
+    client-secret: KFBnZqbbskVEFgdMPs490YMNBu1pYUmL
+    cloudflare-access:
+      client-id: 4b8e0f135fa1a9c574a175e48a28bcae.access
+      client-secret: cfast_tkNtlnk6qfDDvFfU4xapngDaVoqsVPqcrBRcXZtP73e28124
+      enabled: true

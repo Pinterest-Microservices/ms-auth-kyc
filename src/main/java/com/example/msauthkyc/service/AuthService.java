@@ -1,12 +1,17 @@
 package com.example.msauthkyc.service;
 
+import com.example.libauthkyc.autoconfigure.LibAuthKycProperties;
+import com.example.libexception.error.CommonErrorCode;
+import com.example.libexception.exception.UnauthorizedException;
 import com.example.msauthkyc.exception.InvalidRefreshTokenException;
-import com.example.msauthkyc.model.AccessTokenResponse;
 import com.example.msauthkyc.model.KeycloakTokenResponse;
 import com.example.msauthkyc.model.LoginResponse;
 import lombok.RequiredArgsConstructor;
+import org.keycloak.admin.client.Keycloak;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
@@ -17,20 +22,17 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.Duration;
-
+import static com.example.msauthkyc.util.OAuth2ConstantsUtil.*;
 import static com.example.msauthkyc.util.TokenUtil.validateRefreshToken;
 
 @Service
 @RequiredArgsConstructor
 public class AuthService {
 
-    private static final String REGISTRATION_ID = "pin-client";
-    private static final String REFRESH_TOKEN = "refresh_token";
-    private static final String TOKEN_ENDPOINT_PATH = "/protocol/openid-connect/token";
-
     private final OAuth2AuthorizedClientService authorizedClientService;
     private final RestTemplate restTemplate;
+    private final Keycloak keycloak;
+    private final LibAuthKycProperties libAuthKycProperties;
 
     @Value("${spring.security.oauth2.client.registration.pin-client.client-id}")
     private String clientId;
@@ -43,20 +45,29 @@ public class AuthService {
 
     public LoginResponse handleLogin(OidcUser oidcUser, Authentication authentication) {
         OAuth2AuthorizedClient authorizedClient = loadAuthorizedClient(authentication);
-
-        String accessToken = authorizedClient.getAccessToken().getTokenValue();
-        String pictureUrl = oidcUser.getPicture();
+        if (authorizedClient == null) {
+            throw new UnauthorizedException(CommonErrorCode.UNAUTHORIZED);
+        }
 
         return LoginResponse.builder()
                 .accountId(oidcUser.getSubject())
                 .email(oidcUser.getEmail())
                 .fullName(oidcUser.getFullName())
-                .pictureUrl(pictureUrl)
-                .accessToken(accessToken)
+                .pictureUrl(oidcUser.getPicture())
+                .accessToken(authorizedClient.getAccessToken().getTokenValue())
                 .build();
     }
 
-    public ResponseEntity<AccessTokenResponse> refreshToken(String refreshToken) {
+    public void logout(String userId) {
+        String realm = libAuthKycProperties.getKeycloak().getRealm();
+
+        keycloak.realm(realm)
+                .users()
+                .get(userId)
+                .logout();
+    }
+
+    public KeycloakTokenResponse refreshToken(String refreshToken) {
         validateRefreshToken(refreshToken);
 
         MultiValueMap<String, String> form = buildRefreshForm(refreshToken);
@@ -73,12 +84,7 @@ public class AuthService {
                 throw new InvalidRefreshTokenException();
             }
 
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.SET_COOKIE, getResponseCookie(keycloakResponse.getRefreshToken()).toString())
-                    .body(AccessTokenResponse.builder()
-                            .accessToken(keycloakResponse.getAccessToken())
-                            .build());
-
+            return keycloakResponse;
         } catch (HttpClientErrorException.BadRequest | HttpClientErrorException.Unauthorized e) {
             throw new InvalidRefreshTokenException();
         }
@@ -86,12 +92,6 @@ public class AuthService {
 
     private OAuth2AuthorizedClient loadAuthorizedClient(Authentication authentication) {
         return authorizedClientService.loadAuthorizedClient(REGISTRATION_ID, authentication.getName());
-    } // cari istifadecini getiriri //todo: arasdirma et
-
-    private String extractRefreshToken(OAuth2AuthorizedClient authorizedClient) {
-        return authorizedClient.getRefreshToken() != null
-                ? authorizedClient.getRefreshToken().getTokenValue()
-                : null;
     }
 
     private MultiValueMap<String, String> buildRefreshForm(String refreshToken) {
@@ -111,15 +111,5 @@ public class AuthService {
 
     private String tokenEndpoint() {
         return issuerUri + TOKEN_ENDPOINT_PATH;
-    }
-
-    private ResponseCookie getResponseCookie(String refreshToken) {
-        return ResponseCookie.from("refresh_token", refreshToken)
-                .httpOnly(true)
-                .secure(false)
-                .path("/")
-                .maxAge(Duration.ofDays(30))
-                .sameSite("None")
-                .build();
     }
 }
